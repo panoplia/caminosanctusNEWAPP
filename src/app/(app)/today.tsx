@@ -3,12 +3,23 @@ import { Screen, PrimaryButton } from '@/design/components';
 import { useColors } from '@/design/components';
 import { Spacing, Typography } from '@/design/tokens';
 import { getPlanAssignment, getProfile } from '@/db/repos';
+import { getPlanDay } from '@/data/plans';
 import { router } from 'expo-router';
 
 export default function TodayScreen() {
   const colors = useColors();
   const profile = getProfile();
   const assignment = getPlanAssignment();
+
+  const planDay = assignment
+    ? getPlanDay(assignment.planId, assignment.currentDay)
+    : undefined;
+
+  const todayLabel = new Date().toLocaleDateString('es', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
 
   return (
     <Screen scrollable>
@@ -17,26 +28,39 @@ export default function TodayScreen() {
           Buen día{profile?.name ? `, ${profile.name}` : ''}.
         </Text>
         <Text style={{ ...Typography.caption, color: colors.stone, marginTop: Spacing.xs, fontFamily: 'Inter_400Regular' }}>
-          {new Date().toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' })}
+          {todayLabel}
         </Text>
       </View>
 
-      <View style={{ backgroundColor: colors.surface, borderRadius: 14, padding: Spacing.lg, marginTop: Spacing.xl }}>
-        <Text style={{ ...Typography.caption, color: colors.stone, fontFamily: 'Inter_400Regular', marginBottom: Spacing.sm }}>
+      <View style={{
+        backgroundColor: colors.surface,
+        borderRadius: 14,
+        padding: Spacing.lg,
+        marginTop: Spacing.xl,
+        borderWidth: 1,
+        borderColor: colors.hairline,
+      }}>
+        <Text style={{ ...Typography.caption, color: colors.stone, fontFamily: 'Inter_400Regular', marginBottom: Spacing.sm, letterSpacing: 0.8 }}>
           LECTURA DE HOY
         </Text>
-        {assignment ? (
+
+        {planDay ? (
           <>
-            <Text style={{ ...Typography.prayerBody, color: colors.ink, fontFamily: 'Cormorant_500Medium' }}>
-              Día {assignment.currentDay} — Plan de lectura
+            <Text style={{ ...Typography.prayerLead, color: colors.ink, fontFamily: 'Cormorant_500Medium' }}>
+              {planDay.passageRef}
             </Text>
-            <Text style={{ ...Typography.body, color: colors.stone, marginTop: Spacing.sm, fontFamily: 'Inter_400Regular' }}>
-              Pasajes y notas aparecerán aquí cuando el plan esté completo con contenido verificado.
+            <Text style={{ ...Typography.body, color: colors.stone, marginTop: Spacing.base, fontFamily: 'Inter_400Regular', lineHeight: 24 }}>
+              {planDay.whyThisForYou}
             </Text>
+            {assignment && (
+              <Text style={{ ...Typography.caption, color: colors.stone, marginTop: Spacing.lg, fontFamily: 'Inter_400Regular' }}>
+                Día {assignment.currentDay} de tu plan
+              </Text>
+            )}
           </>
         ) : (
           <Text style={{ ...Typography.body, color: colors.stone, fontFamily: 'Inter_400Regular' }}>
-            No hay plan asignado todavía. Completa el proceso de ingreso para comenzar.
+            Completa el proceso de ingreso para comenzar tu plan de lectura.
           </Text>
         )}
       </View>
