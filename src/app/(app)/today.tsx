@@ -1,5 +1,5 @@
-import { View, Text, ScrollView } from 'react-native';
-import { Screen, PrimaryButton } from '@/design/components';
+import { View, Text } from 'react-native';
+import { Screen, PrimaryButton, TextButton } from '@/design/components';
 import { useColors } from '@/design/components';
 import { Spacing, Typography } from '@/design/tokens';
 import { getPlanAssignment, getProfile } from '@/db/repos';
@@ -32,11 +32,29 @@ export default function TodayScreen() {
         </Text>
       </View>
 
+      {/* Daily mood check-in — anti-churn mechanism (ORATIO_MASTER_BRIEF §2.1) */}
+      <View style={{
+        backgroundColor: colors.candle + '22',
+        borderRadius: 14,
+        padding: Spacing.base,
+        marginTop: Spacing.lg,
+        borderWidth: 1,
+        borderColor: colors.candle + '44',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+        <Text style={{ ...Typography.body, color: colors.ink, fontFamily: 'Inter_400Regular' }}>
+          ¿Cómo llegas hoy?
+        </Text>
+        <TextButton label="Orar →" onPress={() => router.push('/(app)/checkin')} />
+      </View>
+
       <View style={{
         backgroundColor: colors.surface,
         borderRadius: 14,
         padding: Spacing.lg,
-        marginTop: Spacing.xl,
+        marginTop: Spacing.base,
         borderWidth: 1,
         borderColor: colors.hairline,
       }}>

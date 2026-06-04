@@ -5,6 +5,8 @@ import { Inter_400Regular, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { useEffect } from 'react';
 import { initSchema } from '@/db/schema';
 import { useColorScheme } from 'react-native';
+import { configureNotificationHandler, schedulePrayerReminders } from '@/services/notifications';
+import { getProfile } from '@/db/repos';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -21,6 +23,17 @@ export default function RootLayout() {
     } catch (e) {
       console.warn('DB init error:', e);
     }
+
+    // Configure notification display behavior
+    configureNotificationHandler();
+
+    // Schedule prayer reminders (2/week) once profile exists
+    try {
+      const profile = getProfile();
+      if (profile) {
+        schedulePrayerReminders(profile.name).catch(() => {});
+      }
+    } catch {}
   }, []);
 
   if (!fontsLoaded) return null;
