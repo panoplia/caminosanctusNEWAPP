@@ -12,7 +12,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.panoplia.caminosanctus.app",
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/icon.png"
     },
     "android": {
       "package": "com.panoplia.caminosanctus.app",
@@ -45,6 +45,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "91e5e674-7570-4af0-a4c9-8479b8b02096"
+      }
+    },
+    "owner": "glassboxia"
   }
 }
