@@ -1,6 +1,7 @@
 import type { PrayerService } from './interface';
 import type { Intake, Prayer } from '@/domain/types';
 import type { Passage } from '@/domain/types';
+import { CURATED_PASSAGES } from '@/data/passages';
 
 const MOCK_PRAYERS: Record<string, string> = {
   anxiety: 'Señor, cargo el peso de la incertidumbre en mi pecho. Sé que el futuro me preocupa y que mis fuerzas se agotan en el intento de controlar lo que no puedo ver. Pero tú, que conoces cada paso de mi camino antes de que lo dé, me invitas a descansar. Que pueda soltar, aunque sea por un momento, la necesidad de saber todo. Tú eres mi pastor — nada me faltará.',
@@ -21,17 +22,15 @@ export const mockPrayerService: PrayerService = {
   async generate(intake: Intake, _passages: Passage[]): Promise<Prayer> {
     await new Promise((r) => setTimeout(r, 800));
     const template = MOCK_PRAYERS[intake.emotionalState] ?? MOCK_PRAYERS.other;
-    const closing =
-      intake.tradition === 'orthodox'
-        ? '\n\nUn padre espiritual puede acompañarte a vivir lo que esta oración nombra. Búscalo cuando estés listo.'
-        : '\n\nUn sacerdote puede acompañarte a vivir lo que esta oración nombra. Búscalo cuando estés listo.';
     return {
       id: generateMockId(),
       intakeId: generateMockId(),
-      body: `${intake.name}, ${template}${closing}`,
+      body: template,
       emotionalState: intake.emotionalState,
       tradition: intake.tradition,
       createdAt: Date.now(),
+      passages: CURATED_PASSAGES[intake.emotionalState] ?? [],
+      passagesAiSelected: false,
     };
   },
 };

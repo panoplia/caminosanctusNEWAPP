@@ -33,6 +33,8 @@ export interface Prayer {
   moodTag?: string;
   rating?: Rating;
   createdAt: number;
+  passages?: Passage[];         // curated (free) or AI-selected (premium)
+  passagesAiSelected?: boolean; // true = AI-selected, requires subscription
 }
 
 export interface Plan {

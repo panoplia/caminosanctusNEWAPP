@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { Screen, PrayerText, BlurVeil, PriestPointer, PrimaryButton, TextButton } from '@/design/components';
 import { useColors } from '@/design/components';
 import { useAppStore } from '@/state/store';
+import { useShallow } from 'zustand/react/shallow';
 import { subscriptionService } from '@/services';
 import { canReadFullPrayer } from '@/domain/subscription';
 import { Spacing, Typography, Colors } from '@/design/tokens';
@@ -11,11 +12,11 @@ import type { SubscriptionState } from '@/domain/types';
 
 export default function PaywallScreen() {
   const colors = useColors();
-  const { currentPrayer, subscription, setSubscription } = useAppStore((s) => ({
+  const { currentPrayer, subscription, setSubscription } = useAppStore(useShallow((s) => ({
     currentPrayer: s.currentPrayer,
     subscription: s.subscription,
     setSubscription: s.setSubscription,
-  }));
+  })));
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,8 +85,11 @@ export default function PaywallScreen() {
         <Text style={{ ...Typography.body, color: colors.ink, textAlign: 'center', fontFamily: 'Inter_400Regular', marginBottom: Spacing.sm }}>
           Esta oración fue escrita para ti.
         </Text>
-        <Text style={{ ...Typography.caption, color: colors.stone, textAlign: 'center', fontFamily: 'Inter_400Regular', marginBottom: Spacing.lg }}>
-          Comienza tu prueba gratuita de 17 días para leerla completa.
+        <Text style={{ ...Typography.caption, color: colors.stone, textAlign: 'center', fontFamily: 'Inter_400Regular', marginBottom: Spacing.sm }}>
+          Comienza tu prueba gratuita de 21 días para leerla completa.
+        </Text>
+        <Text style={{ ...Typography.caption, color: colors.stone, textAlign: 'center', fontFamily: 'Inter_400Regular', marginBottom: Spacing.lg, fontStyle: 'italic' }}>
+          Completa tu racha de 21 días y gana un mes gratis. La ciencia muestra que los hábitos comienzan a formarse en tan solo 21 días.
         </Text>
 
         {/* Almsgiving line — flagged as DRAFT, must not ship live without promo program */}
@@ -95,7 +99,7 @@ export default function PaywallScreen() {
         </Text> */}
 
         <PrimaryButton
-          label={loading ? 'Un momento…' : 'Comenzar prueba gratuita de 17 días'}
+          label={loading ? 'Un momento…' : 'Comenzar prueba gratuita de 21 días'}
           onPress={startTrial}
           disabled={loading}
         />

@@ -1,6 +1,6 @@
 import type { SubscriptionState } from './types';
 
-export const TRIAL_DAYS = 17;
+export const TRIAL_DAYS = 21;
 
 export function canReadFullPrayer(state: SubscriptionState): boolean {
   return state.entitled || state.inTrial;

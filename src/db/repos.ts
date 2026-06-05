@@ -5,21 +5,23 @@ function randomId(): string {
   return Math.random().toString(36).slice(2, 11);
 }
 
-export function saveProfile(name: string, tradition: string): void {
+export function saveProfile(name: string, tradition: string, burdenText: string = ''): void {
   const db = getDb();
   const existing = db.getFirstSync<{ id: string }>('SELECT id FROM profile LIMIT 1');
   if (existing) {
-    db.runSync('UPDATE profile SET name = ?, tradition = ? WHERE id = ?', [name, tradition, existing.id]);
+    db.runSync('UPDATE profile SET name = ?, tradition = ?, burden_text = ? WHERE id = ?', [name, tradition, burdenText, existing.id]);
   } else {
-    db.runSync('INSERT INTO profile (id, name, tradition, created_at) VALUES (?, ?, ?, ?)', [
-      randomId(), name, tradition, Date.now(),
+    db.runSync('INSERT INTO profile (id, name, tradition, burden_text, created_at) VALUES (?, ?, ?, ?, ?)', [
+      randomId(), name, tradition, burdenText, Date.now(),
     ]);
   }
 }
 
-export function getProfile(): { name: string; tradition: string } | null {
+export function getProfile(): { name: string; tradition: string; burdenText: string } | null {
   const db = getDb();
-  return db.getFirstSync<{ name: string; tradition: string }>('SELECT name, tradition FROM profile LIMIT 1');
+  const row = db.getFirstSync<{ name: string; tradition: string; burden_text: string }>('SELECT name, tradition, burden_text FROM profile LIMIT 1');
+  if (!row) return null;
+  return { name: row.name, tradition: row.tradition, burdenText: row.burden_text ?? '' };
 }
 
 export function savePrayer(prayer: Prayer): void {

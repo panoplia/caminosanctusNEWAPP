@@ -7,9 +7,12 @@ import { initSchema } from '@/db/schema';
 import { useColorScheme } from 'react-native';
 import { configureNotificationHandler, schedulePrayerReminders } from '@/services/notifications';
 import { getProfile } from '@/db/repos';
+import { useAppStore } from '@/state/store';
+import type { Tradition } from '@/domain/types';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const setOnboarding = useAppStore((s) => s.setOnboarding);
 
   const [fontsLoaded] = useFonts({
     Cormorant_500Medium,
@@ -24,16 +27,17 @@ export default function RootLayout() {
       console.warn('DB init error:', e);
     }
 
-    // Configure notification display behavior
-    configureNotificationHandler();
-
-    // Schedule prayer reminders (2/week) once profile exists
+    // Hydrate store from DB so state survives reloads
     try {
       const profile = getProfile();
       if (profile) {
+        setOnboarding({ name: profile.name, tradition: profile.tradition as Tradition, burdenText: profile.burdenText });
         schedulePrayerReminders(profile.name).catch(() => {});
       }
     } catch {}
+
+    // Configure notification display behavior
+    configureNotificationHandler();
   }, []);
 
   if (!fontsLoaded) return null;

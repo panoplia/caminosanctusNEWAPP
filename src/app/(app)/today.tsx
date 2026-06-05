@@ -5,9 +5,11 @@ import { Spacing, Typography } from '@/design/tokens';
 import { getPlanAssignment, getProfile } from '@/db/repos';
 import { getPlanDay } from '@/data/plans';
 import { router } from 'expo-router';
+import { useAppStore } from '@/state/store';
 
 export default function TodayScreen() {
   const colors = useColors();
+  const setPrayer = useAppStore((s) => s.setPrayer);
   const profile = getProfile();
   const assignment = getPlanAssignment();
 
@@ -84,7 +86,7 @@ export default function TodayScreen() {
       </View>
 
       <View style={{ marginTop: Spacing.lg }}>
-        <PrimaryButton label="Nueva oración" onPress={() => router.push('/prayer')} />
+        <PrimaryButton label="Nueva oración" onPress={() => { setPrayer(null); router.push('/prayer'); }} />
         <PrimaryButton label="Ver mi ritmo" onPress={() => router.push('/(app)/rhythm')} />
       </View>
     </Screen>

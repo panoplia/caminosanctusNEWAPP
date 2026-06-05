@@ -11,11 +11,17 @@ export function getDb(): SQLite.SQLiteDatabase {
 
 export function initSchema(): void {
   const db = getDb();
+  // Migrate existing DBs that don't have burden_text column yet
+  try {
+    db.execSync(`ALTER TABLE profile ADD COLUMN burden_text TEXT NOT NULL DEFAULT ''`);
+  } catch (_) { /* column already exists — safe to ignore */ }
+
   db.execSync(`
     CREATE TABLE IF NOT EXISTS profile (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       tradition TEXT NOT NULL,
+      burden_text TEXT NOT NULL DEFAULT '',
       created_at INTEGER NOT NULL
     );
 
